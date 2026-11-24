@@ -1,177 +1,130 @@
 <!DOCTYPE html>
 <html lang="sw"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>REAL TEACHER</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
-*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#f0f2f5;color:#111}
-header{background:#0b2a4a;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-header b{font-size:20px}header span{font-size:12px;opacity:.9}
-.top{display:flex;gap:8px;padding:10px;flex-wrap:wrap;background:#fff;position:sticky;top:52px;z-index:9;border-bottom:1px solid #ddd}
+*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#f0f2f5}
+.entrance{background:linear-gradient(180deg,#0b2a4a,#0a4a7a);color:#fff;padding:22px 16px 26px;text-align:center;border-radius:0 0 24px 24px}
+.entrance .icons{font-size:42px;letter-spacing:6px}
+.entrance h1{font-size:34px;margin:8px 0 2px;line-height:1}.entrance h1 span{color:#ffc107}
+.entrance p{margin:4px 0;opacity:.95}
+.quote{background:#fff;color:#0b2a4a;border-radius:12px;padding:10px;margin:14px auto;max-width:480px;font-weight:bold;font-size:14px}
+header{background:#0b2a4a;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.top{display:flex;gap:8px;padding:10px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #ddd}
 .top button{padding:9px 12px;border:1px solid #0b2a4a;background:#fff;border-radius:20px;cursor:pointer;font-weight:bold}
 .top button.on{background:#0b2a4a;color:#fff}
 .wrap{max-width:1100px;margin:auto;padding:12px}
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px #0001}
-h2{margin:0 0 8px}h3{margin:10px 0 6px}label{font-size:13px;font-weight:bold;display:block;margin-top:10px}
-input,select,textarea{width:100%;padding:10px;margin-top:4px;border:1px solid #ccc;border-radius:8px}
-button.main{background:#0b2a4a;color:#fff;border:0;padding:11px 14px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%;margin-top:10px}
-button.small{width:auto;padding:7px 10px;margin:4px 2px}
+label{font-weight:bold;font-size:13px;display:block;margin-top:10px}
+input,select,textarea{width:100%;padding:11px;margin-top:4px;border:1px solid #ccc;border-radius:8px}
+button.main{background:#0b2a4a;color:#fff;border:0;padding:12px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%;margin-top:10px}
 button.danger{background:#c00;color:#fff;border:0;padding:7px 10px;border-radius:8px;cursor:pointer}
 button.green{background:#0a7a3a;color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#0b2a4a;color:#fff}
 .flex{display:flex;gap:10px;flex-wrap:wrap}.flex>div{flex:1;min-width:220px}
-.pill{display:inline-block;background:#e8f0ff;padding:4px 10px;border-radius:20px;font-size:12px;margin:2px}
-.avatar{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#ddd;display:block}
+.pill{display:inline-block;background:#e8f0ff;padding:4px 10px;border-radius:20px;font-size:12px}
+.avatar{width:70px;height:70px;border-radius:50%;object-fit:cover;background:#ddd}
 .bar{height:14px;background:#eee;border-radius:10px;overflow:hidden;margin:4px 0}.bar i{display:block;height:100%;background:#0a7a3a}
 .chat{border:1px solid #ddd;border-radius:10px;padding:10px;max-height:300px;overflow:auto;background:#fafafa}
 .msg{padding:8px 10px;border-radius:10px;margin:6px 0;max-width:85%}.me{background:#0b2a4a;color:#fff;margin-left:auto}.other{background:#e9e9e9}
-.hide{display:none}.muted{color:#666;font-size:13px}
-</style></head>
-<body>
-<header><div><b>REAL TEACHER</b><br><span id="slogan">Elimu ni Mwanga - Kila Mwanafunzi Anaweza Kufaulu</span></div><div style="text-align:right"><span id="hiUser"></span><br><select id="lang" onchange="setLang(this.value)" style="width:auto;padding:5px"><option value="sw">Kiswahili</option><option value="en">English</option></select></div></header>
+.hide{display:none}.muted{color:#666;font-size:13px}.center{text-align:center}
+</style></head><body>
 
-<div class="top" id="menu"></div>
-<div class="wrap">
-
-<!-- LOGIN / REGISTER -->
-<div id="p-login" class="card">
-<h2 id="tWelcome">Karibu REAL TEACHER</h2><p class="muted" id="tLoginSub">Jisajili mara moja, baadae ingia tu.</p>
-<label id="lName">Jina Kamili</label><input id="regName" placeholder="Jina Kamili">
-<label id="lPhone">Namba ya Simu</label><input id="regPhone" placeholder="07XXXXXXXX">
-<label id="lPic">Picha Yako</label><input type="file" id="regPic" accept="image/*">
-<label id="lPass">Password</label><input id="regPass" type="password">
-<label id="lRole">Wewe ni nani?</label><select id="regRole"><option value="teacher">Mwalimu</option><option value="admin">Admin</option></select>
-<label id="lSubj">Masomo Unayofundisha (Maximum 3)</label><div id="subjBox"></div><p class="muted" id="subjNote">Chagua masomo 3 tu kati ya ya lazima O-Level TZ.</p>
-<label id="lClass">Madarasa Unayofundisha</label><input id="regClass" placeholder="Mf: Form 1, Form 2">
-<button class="main" onclick="register()" id="btnReg">Jisajili / Ingia</button>
-<p class="muted" id="noteLogin">Kama tayari una account, jaza jina na password tu, utaingia.</p>
+<!-- ENTRANCE BOARD -->
+<div id="entrance" class="entrance">
+<div class="icons">📚 ✏️ 🖊️ 📖 🎓 📐</div>
+<h1>REAL<br><span>TEACHER</span></h1>
+<p>Quality Education, Better Results</p>
+<p style="font-size:13px">📚 Vitabu • ✏️ Kalamu • 🖊️ Pen • 🎓 Elimu ni Mwanga</p>
+<div class="quote" id="quoteBox">“Elimu ni Mwanga - Kila Mwanafunzi Anaweza Kufaulu. Mwalimu Bora Hujenga Taifa Bora.”</div>
+<p style="font-size:12px">✦ Jifunze Leo, Uongoze Kesho ✦</p>
 </div>
 
-<!-- DASHBOARD -->
-<div id="p-dash" class="card hide">
-<h2 id="tDash">Dashboard</h2><p id="dashInfo"></p>
-<div class="flex"><div class="card"><h3 id="tStud">Wanafunzi</h3><b id="cStud" style="font-size:28px">0</b></div>
-<div class="card"><h3 id="tTest">Tests</h3><b id="cTest" style="font-size:28px">0</b></div>
-<div class="card"><h3 id="tAvg">Wastani wa Shule</h3><b id="cAvg" style="font-size:28px">-</b></div></div>
-<h3 id="tPerf">Performance - Graph</h3><div id="graphs"></div>
-<div id="adminTeachers"></div>
+<div id="p-login" class="card" style="max-width:480px;margin:14px auto">
+<h2>Karibu REAL TEACHER</h2><p class="muted">Ingia na Email yako. Kama huna account, jisajili.</p>
+<label>Email</label><input id="email" type="email" placeholder="mf: josephatsilondwa@gmail.com">
+<label>Password</label><input id="pass" type="password" placeholder="Password">
+<label>Jina Kamili (kwa kujisajili)</label><input id="regName" placeholder="Josephat Silondwa">
+<label>Namba ya Simu</label><input id="regPhone" placeholder="07XXXXXXXX">
+<label>Picha Yako</label><input type="file" id="regPic" accept="image/*">
+<label>Wewe ni nani?</label><select id="regRole"><option value="teacher">Mwalimu / TEACHER</option><option value="admin">Admin</option></select>
+<label>Masomo Unayofundisha (Maximum 3 - Ya Lazima O-Level TZ)</label><div id="subjBox"></div>
+<label>Madarasa Unayofundisha</label><input id="regClass" placeholder="Mf: Form 1, Form 2">
+<button class="main" onclick="doLogin()">Ingia na Email</button>
+<button class="main" style="background:#0a7a3a" onclick="doRegister()">Jisajili Mpya</button>
+<p class="muted center" id="dbStatus">⏳ Inaunganisha na Online Database...</p>
 </div>
 
-<!-- WANAFUNZI -->
-<div id="p-stud" class="card hide">
-<h2 id="tStud2">Wanafunzi</h2>
-<label id="lSName">Jina la Mwanafunzi</label><input id="stName">
-<label id="lSForm">Kidato</label><select id="stForm"><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select>
-<label id="lSClass">Darasa / Mkondo</label><input id="stClass" placeholder="Mf: A">
-<button class="main" onclick="addStudent()" id="btnAddStud">Ongeza Mwanafunzi</button>
-<div id="studList"></div>
+<header id="mainHeader" class="hide"><div><b>REAL TEACHER</b><br><span id="hiUser"></span></div><div><select id="lang" onchange="setLang(this.value)" style="padding:6px"><option value="sw">Kiswahili</option><option value="en">English</option></select> <button onclick="logout()" style="padding:6px 10px;background:#c00;color:#fff;border:0;border-radius:8px">Logout</button></div></header>
+<div class="top hide" id="menu"></div>
+<div class="wrap hide" id="mainWrap">
+
+<div id="p-dash" class="card"><h2>Dashboard</h2><p id="dashInfo"></p>
+<div class="flex"><div class="card"><h3>Wanafunzi</h3><b id="cStud" style="font-size:28px">0</b></div><div class="card"><h3>Tests</h3><b id="cTest" style="font-size:28px">0</b></div><div class="card"><h3>Wastani wa Shule</h3><b id="cAvg" style="font-size:28px">-</b></div></div>
+<h3>Performance - Graph</h3><div id="graphs"></div><div id="adminTeachers"></div></div>
+
+<div id="p-stud" class="card hide"><h2>Wanafunzi</h2>
+<label>Jina la Mwanafunzi</label><input id="stName">
+<label>Kidato</label><select id="stForm"><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select>
+<label>Darasa / Mkondo</label><input id="stClass" placeholder="A">
+<button class="main" onclick="addStudent()">Ongeza Mwanafunzi</button><div id="studList"></div></div>
+
+<div id="p-res" class="card hide"><h2>Matokeo / Test Saving</h2><p class="muted">Masomo yote kwenye table MOJA. Matokeo yaandikwe kabisa: Kidato + Somo. Mwalimu anaona matokeo ya mwalimu mwingine.</p>
+<label>Jina la Test</label><input id="testName" placeholder="Test 10">
+<label>Kidato cha Test Hii</label><select id="testForm"><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select>
+<label>Somo la Test Hii</label><select id="testSubj"></select>
+<label>Mwanafunzi</label><select id="testStud"></select>
+<label>Alama (0-100)</label><input id="testMarks" type="number" min="0" max="100">
+<button class="main" onclick="saveResult()">Save Matokeo</button>
+<h3>Matokeo Yote - Table Moja</h3><div style="overflow:auto"><table><thead><tr><th>Mwanafunzi</th><th>Kidato</th><th>Somo</th><th>Test</th><th>Alama</th><th>Grade</th><th>Mwalimu</th><th>Action</th></tr></thead><tbody id="resTable"></tbody></table></div>
+<h3>Muhtasari - Average + Division (Automatic)</h3><div id="summary"></div></div>
+
+<div id="p-chat" class="card hide"><h2>Chat na Admin</h2><p class="muted">Mwalimu anachat na Admin tu. Waalimu kwa waalimu hawachati.</p>
+<div class="chat" id="chatBox"></div><input id="chatIn" placeholder="Andika ujumbe..."><button class="main" onclick="sendChat()">Tuma</button>
+<h3>Comments</h3><div id="commList"></div><input id="commIn" placeholder="Andika comment..."><button class="main" onclick="addComment()">Ongeza Comment</button></div>
+
+<div id="p-iris" class="card hide"><h2>IRIS AI 🤖</h2><p class="muted">Muulize IRIS matokeo ya mwanafunzi yeyote, au muombe ushauri kuhusu matokeo na mambo ya kitaaluma.</p>
+<div class="chat" id="irisBox"></div><input id="irisIn" placeholder="Mf: Juma Form 2 Kiswahili alipata ngapi?"><button class="main" onclick="askIris()">Muulize IRIS</button>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="green" onclick="quickIris('salamu')">Salamu</button><button class="green" onclick="quickIris('ushauri')">Nipe Ushauri</button><button class="green" onclick="quickIris('wastani')">Wastani</button></div></div>
+
+<div id="p-set" class="card hide"><h2>Settings / Profile Yangu</h2>
+<label>Jina</label><input id="setName"><label>Namba</label><input id="setPhone"><label>Badilisha Picha</label><input type="file" id="setPic" accept="image/*"><label>Madarasa</label><input id="setClass"><p id="setSubjShow"></p>
+<button class="main" onclick="saveProfile()">Save Profile</button></div>
 </div>
 
-<!-- MATOKEO / TEST SAVING - TABLE MOJA -->
-<div id="p-res" class="card hide">
-<h2 id="tRes">Matokeo / Test Saving</h2>
-<p class="muted" id="resNote">Masomo yote kwenye table moja. Matokeo yaandikwe kabisa: Kidato + Somo. Mwalimu anaona matokeo ya mwalimu mwingine.</p>
-<label id="lTestName">Jina la Test</label><input id="testName" placeholder="Mf: Test 10">
-<label id="lTestForm">Kidato cha Test Hii</label><select id="testForm"><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select>
-<label id="lTestSubj">Somo la Test Hii</label><select id="testSubj"></select>
-<label id="lTestStud">Mwanafunzi</label><select id="testStud"></select>
-<label id="lMarks">Alama (0-100)</label><input id="testMarks" type="number" min="0" max="100">
-<button class="main" onclick="saveResult()" id="btnSaveRes">Save Matokeo</button>
-<h3 id="tAllRes">Matokeo Yote - Table Moja</h3>
-<div style="overflow:auto"><table><thead><tr><th>Mwanafunzi</th><th>Kidato</th><th>Somo</th><th>Test</th><th>Alama</th><th>Grade</th><th>Mwalimu</th><th>Action</th></tr></thead><tbody id="resTable"></tbody></table></div>
-<h3 id="tSummary">Muhtasari kwa Mwanafunzi - Average + Division (Automatic)</h3><div id="summary"></div>
-</div>
-
-<!-- CHAT ADMIN -->
-<div id="p-chat" class="card hide">
-<h2 id="tChat">Chat na Admin</h2><p class="muted" id="chatNote">Mwalimu anachat na Admin tu. Waalimu kwa waalimu hawachati.</p>
-<div class="chat" id="chatBox"></div><input id="chatIn" placeholder="Andika ujumbe..."><button class="main" onclick="sendChat()" id="btnSend">Tuma</button>
-<h3 id="tComm">Comments</h3><div id="commList"></div><input id="commIn" placeholder="Andika comment..."><button class="main" onclick="addComment()" id="btnComm">Ongeza Comment</button>
-</div>
-
-<!-- IRIS -->
-<div id="p-iris" class="card hide">
-<h2>IRIS AI</h2><p class="muted" id="irisNote">Muulize IRIS matokeo ya mwanafunzi yeyote, au muombe ushauri kuhusu matokeo na mambo ya kitaaluma.</p>
-<div class="chat" id="irisBox"></div><input id="irisIn" placeholder="Mf: Juma Form 2 Kiswahili alipata ngapi?"><button class="main" onclick="askIris()" id="btnIris">Muulize IRIS</button>
-<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="small green" onclick="quickIris('salamu')">Salamu</button><button class="small green" onclick="quickIris('ushauri')">Nipe Ushauri</button><button class="small green" onclick="quickIris('wastani')">Wastani wa Wanafunzi</button></div>
-</div>
-
-<!-- SETTINGS -->
-<div id="p-set" class="card hide">
-<h2 id="tSet">Settings / Profile Yangu</h2>
-<label id="lSetName">Jina</label><input id="setName">
-<label id="lSetPhone">Namba</label><input id="setPhone">
-<label id="lSetPic">Badilisha Picha</label><input type="file" id="setPic" accept="image/*">
-<label id="lSetClass">Madarasa</label><input id="setClass">
-<p id="setSubjShow"></p>
-<button class="main" onclick="saveProfile()" id="btnSaveProf">Save Profile</button>
-<button class="main" style="background:#c00" onclick="logout()" id="btnLogout">Toka / Logout</button>
-</div>
-
-</div>
 <script>
+const firebaseConfig={apiKey:"AIzaSyAWeROSbPU4Qg1UwrdJusmH40dfMpwQjY0",authDomain:"real-teacher.firebaseapp.com",projectId:"real-teacher",storageBucket:"real-teacher.firebasestorage.app",messagingSenderId:"187089920582",appId:"1:187089920582:web:9de74396fab4befb372047"};
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.firestore();
 const COMPULSORY=["Kiswahili","English","Mathematics","Biology","Chemistry","Physics","Geography","History","Civics"];
-let DB=JSON.parse(localStorage.getItem("RT_DB")||'{"users":[],"students":[],"results":[],"chats":[],"comments":[]}');
-let CUR=JSON.parse(localStorage.getItem("RT_CUR")||"null");
+let CUR=null,USERS=[],STUDENTS=[],RESULTS=[],CHATS=[],COMMENTS=[];
 let LANG=localStorage.getItem("RT_LANG")||"sw";
-function save(){localStorage.setItem("RT_DB",JSON.stringify(DB));localStorage.setItem("RT_CUR",JSON.stringify(CUR));localStorage.setItem("RT_LANG",LANG)}
 function grade(m){if(m>=75)return"A";if(m>=65)return"B";if(m>=45)return"C";if(m>=30)return"D";return"F"}
-function points(g){return{A:1,B:2,C:3,D:4,F:5}[g]}
-function divisionFromResults(res){let pts=res.map(r=>points(grade(r.marks))).sort((a,b)=>a-b).slice(0,7);let s=pts.reduce((a,b)=>a+b,0);let d=s>=7&&s<=17?"I":s<=22?"II":s<=25?"III":s<=33?"IV":s<=35?"0":"-";return{sum:s,div:d,pts}}
+function pts(g){return{A:1,B:2,C:3,D:4,F:5}[g]}
+function divCalc(res){let p=res.map(r=>pts(grade(r.marks))).sort((a,b)=>a-b).slice(0,7);let s=p.reduce((a,b)=>a+b,0);let d=s>=7&&s<=17?"I":s<=22?"II":s<=25?"III":s<=33?"IV":s<=35?"0":"-";return{sum:s,div:d}}
 function avg(res){if(!res.length)return 0;return (res.reduce((a,r)=>a+r.marks,0)/res.length).toFixed(1)}
-function fileToBase64(f,cb){let r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f)}
-// Language
-const T={sw:{dash:"Dashboard",stud:"Wanafunzi",res:"Matokeo / Test Saving",chat:"Chat na Admin",iris:"IRIS AI",set:"Settings / Profile",welcome:"Karibu REAL TEACHER",loginSub:"Jisajili mara moja, baadae ingia tu.",name:"Jina Kamili",phone:"Namba ya Simu",pic:"Picha Yako",pass:"Password",role:"Wewe ni nani?",subj:"Masomo Unayofundisha (Maximum 3)",classes:"Madarasa Unayofundisha",reg:"Jisajili / Ingia",perf:"Performance - Graph",allRes:"Matokeo Yote - Table Moja",summary:"Muhtasari kwa Mwanafunzi - Average + Division (Automatic)"},en:{dash:"Dashboard",stud:"Students",res:"Results / Test Saving",chat:"Chat with Admin",iris:"IRIS AI",set:"Settings / Profile",welcome:"Welcome REAL TEACHER",loginSub:"Register once, then just login.",name:"Full Name",phone:"Phone Number",pic:"Your Photo",pass:"Password",role:"Who are you?",subj:"Subjects You Teach (Maximum 3)",classes:"Classes You Teach",reg:"Register / Login",perf:"Performance - Graph",allRes:"All Results - One Table",summary:"Student Summary - Average + Division (Automatic)"}};
-function setLang(l){LANG=l;save();applyLang()}
-function applyLang(){let t=T[LANG];document.getElementById("lang").value=LANG;
-document.getElementById("tWelcome").innerText=t.welcome;document.getElementById("tLoginSub").innerText=t.loginSub;
-document.getElementById("lName").innerText=t.name;document.getElementById("lPhone").innerText=t.phone;document.getElementById("lPic").innerText=t.pic;document.getElementById("lPass").innerText=t.pass;document.getElementById("lRole").innerText=t.role;document.getElementById("lSubj").innerText=t.subj;document.getElementById("lClass").innerText=t.classes;document.getElementById("btnReg").innerText=t.reg;
-renderMenu();if(CUR)show("dash");renderAll();}
-function renderMenu(){let items=[["dash",T[LANG].dash],["stud",T[LANG].stud],["res",T[LANG].res],["chat",T[LANG].chat],["iris",T[LANG].iris],["set",T[LANG].set]];
-document.getElementById("menu").innerHTML=items.map(i=>`<button onclick="show('${i[0]}')" id="m-${i[0]}">${i[1]}</button>`).join("")}
-function show(p){["login","dash","stud","res","chat","iris","set"].forEach(x=>document.getElementById("p-"+x).classList.add("hide"));document.getElementById("p-"+p).classList.remove("hide");renderAll()}
-function renderSubjBox(){document.getElementById("subjBox").innerHTML=COMPULSORY.map(s=>`<label style="display:inline-block;margin:4px"><input type="checkbox" value="${s}" class="subjChk"> ${s}</label>`).join("")}
-function register(){
-let name=document.getElementById("regName").value.trim(),phone=document.getElementById("regPhone").value.trim(),pass=document.getElementById("regPass").value,role=document.getElementById("regRole").value,cls=document.getElementById("regClass").value.trim();
-let subs=[...document.querySelectorAll(".subjChk:checked")].map(c=>c.value);
-if(!name||!pass)return alert(LANG=="sw"?"Jaza jina na password":"Fill name and password");
-if(subs.length>3)return alert(LANG=="sw"?"Masomo maximum ni 3 tu":"Maximum 3 subjects only");
-let ex=DB.users.find(u=>u.name.toLowerCase()==name.toLowerCase());
-let picFile=document.getElementById("regPic").files[0];
-let done=(pic)=>{if(ex){if(ex.pass!==pass)return alert("Password si sahihi");CUR=ex}else{let u={name,phone,pass,role,subs,cls,pic:pic||"",id:Date.now()};DB.users.push(u);CUR=u}save();afterLogin()};
-if(picFile)fileToBase64(picFile,done);else done(ex?ex.pic:"");
-}
-function afterLogin(){document.getElementById("p-login").classList.add("hide");document.getElementById("hiUser").innerText=(LANG=="sw"?"Karibu, ":"Welcome, ")+CUR.name+" ("+(CUR.role=="admin"?"ADMIN":"Mwalimu")+")";document.getElementById("setName").value=CUR.name;document.getElementById("setPhone").value=CUR.phone||"";document.getElementById("setClass").value=CUR.cls||"";document.getElementById("setSubjShow").innerText=(LANG=="sw"?"Masomo yangu: ":"My subjects: ")+(CUR.subs||[]).join(", ");show("dash")}
-function logout(){CUR=null;save();location.reload()}
-function saveProfile(){let f=document.getElementById("setPic").files[0];let apply=(pic)=>{CUR.name=document.getElementById("setName").value;CUR.phone=document.getElementById("setPhone").value;CUR.cls=document.getElementById("setClass").value;if(pic)CUR.pic=pic;let u=DB.users.find(x=>x.id==CUR.id);Object.assign(u,CUR);save();alert(LANG=="sw"?"Profile imesaviva":"Profile saved");afterLogin()};if(f)fileToBase64(f,apply);else apply(null)}
-function addStudent(){let n=document.getElementById("stName").value.trim();if(!n)return alert("Jaza jina");DB.students.push({id:Date.now(),name:n,form:document.getElementById("stForm").value,cls:document.getElementById("stClass").value,teacher:CUR.name});save();document.getElementById("stName").value="";renderAll()}
-function saveResult(){let stId=document.getElementById("testStud").value;let st=DB.students.find(s=>s.id==stId);if(!st)return alert("Chagua mwanafunzi");let marks=Number(document.getElementById("testMarks").value);DB.results.push({id:Date.now(),student:st.name,form:document.getElementById("testForm").value,subject:document.getElementById("testSubj").value,test:document.getElementById("testName").value||"Test",marks,teacher:CUR.name,grade:grade(marks)});save();renderAll();alert(LANG=="sw"?"Matokeo yamesaviva kabisa: "+st.name+" - "+document.getElementById("testForm").value+" - "+document.getElementById("testSubj").value:"Saved")}
-function deleteResult(id){if(!confirm(LANG=="sw"?"Uhakika unataka kufuta hii test?":"Delete this test?"))return;DB.results=DB.results.filter(r=>r.id!=id);save();renderAll()}
-function deleteStudent(id){if(!confirm("Futa mwanafunzi?"))return;DB.students=DB.students.filter(s=>s.id!=id);save();renderAll()}
-function sendChat(){let v=document.getElementById("chatIn").value.trim();if(!v)return;DB.chats.push({from:CUR.name,role:CUR.role,text:v,time:new Date().toLocaleString()});save();document.getElementById("chatIn").value="";renderAll()}
-function addComment(){let v=document.getElementById("commIn").value.trim();if(!v)return;DB.comments.push({from:CUR.name,text:v});save();document.getElementById("commIn").value="";renderAll()}
+function fileToB64(f,cb){let r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f)}
+document.getElementById("subjBox").innerHTML=COMPULSORY.map(s=>`<label style="display:inline-block;margin:4px"><input type="checkbox" value="${s}" class="subjChk"> ${s}</label>`).join("");
+async function doRegister(){let email=document.getElementById("email").value.trim(),pass=document.getElementById("pass").value,name=document.getElementById("regName").value.trim(),phone=document.getElementById("regPhone").value.trim(),role=document.getElementById("regRole").value,cls=document.getElementById("regClass").value.trim();let subs=[...document.querySelectorAll(".subjChk:checked")].map(c=>c.value);if(!email||!pass||!name)return alert("Jaza Email, Password na Jina");if(subs.length>3)return alert("Masomo maximum ni 3 tu");let f=document.getElementById("regPic").files[0];let pic="";if(f)pic=await new Promise(res=>fileToB64(f,res));try{let cr=await auth.createUserWithEmailAndPassword(email,pass);await db.collection("users").doc(cr.user.uid).set({name,email,phone,role,subs,cls,pic});alert("Umejisajili! Sasa ingia.");}catch(e){alert(e.message)}}
+async function doLogin(){let email=document.getElementById("email").value.trim(),pass=document.getElementById("pass").value;try{await auth.signInWithEmailAndPassword(email,pass);}catch(e){alert(e.message)}}
+async function logout(){await auth.signOut();location.reload()}
+auth.onAuthStateChanged(async u=>{if(!u)return;let doc=await db.collection("users").doc(u.uid).get();CUR={id:u.uid,...doc.data()};document.getElementById("dbStatus").innerText="✅ Online Database - Connected";document.getElementById("p-login").classList.add("hide");document.getElementById("entrance").classList.add("hide");document.getElementById("mainHeader").classList.remove("hide");document.getElementById("menu").classList.remove("hide");document.getElementById("mainWrap").classList.remove("hide");document.getElementById("hiUser").innerText="Karibu, "+CUR.name+" - "+(CUR.role=="admin"?"ADMIN":"TEACHER")+" - "+CUR.email;document.getElementById("setName").value=CUR.name;document.getElementById("setPhone").value=CUR.phone||"";document.getElementById("setClass").value=CUR.cls||"";document.getElementById("setSubjShow").innerText="Masomo yangu: "+(CUR.subs||[]).join(", ");listenAll();show("dash")});
+function listenAll(){db.collection("users").onSnapshot(s=>{USERS=s.docs.map(d=>({id:d.id,...d.data()}));renderAll()});db.collection("students").onSnapshot(s=>{STUDENTS=s.docs.map(d=>({id:d.id,...d.data()}));renderAll()});db.collection("results").onSnapshot(s=>{RESULTS=s.docs.map(d=>({id:d.id,...d.data()}));renderAll()});db.collection("chats").orderBy("time").onSnapshot(s=>{CHATS=s.docs.map(d=>({id:d.id,...d.data()}));renderAll()});db.collection("comments").onSnapshot(s=>{COMMENTS=s.docs.map(d=>({id:d.id,...d.data()}));renderAll()});}
+function setLang(l){LANG=l;localStorage.setItem("RT_LANG",l);renderMenu()}
+function renderMenu(){let items=[["dash","Dashboard"],["stud","Students"],["res","Results (Test)"],["chat","Chat with Admin"],["iris","AI IRIS"],["set","Settings"]];document.getElementById("menu").innerHTML=items.map(i=>`<button onclick="show('${i[0]}')">${i[1]}</button>`).join("")}
+function show(p){["dash","stud","res","chat","iris","set"].forEach(x=>document.getElementById("p-"+x).classList.add("hide"));document.getElementById("p-"+p).classList.remove("hide");renderAll()}
+async function addStudent(){let n=document.getElementById("stName").value.trim();if(!n)return alert("Jaza jina");await db.collection("students").add({name:n,form:document.getElementById("stForm").value,cls:document.getElementById("stClass").value,teacher:CUR.name});document.getElementById("stName").value=""}
+async function saveResult(){let st=STUDENTS.find(s=>s.id==document.getElementById("testStud").value);if(!st)return alert("Chagua mwanafunzi");let marks=Number(document.getElementById("testMarks").value);await db.collection("results").add({student:st.name,form:document.getElementById("testForm").value,subject:document.getElementById("testSubj").value,test:document.getElementById("testName").value||"Test",marks,teacher:CUR.name,grade:grade(marks)});alert("Matokeo yamesaviva kabisa: "+st.name+" - "+document.getElementById("testForm").value+" - "+document.getElementById("testSubj").value)}
+async function deleteResult(id){if(!confirm("Uhakika unataka kufuta hii test? Kufuta ANY TIME."))return;await db.collection("results").doc(id).delete()}
+async function deleteStudent(id){if(!confirm("Futa mwanafunzi?"))return;await db.collection("students").doc(id).delete()}
+async function sendChat(){let v=document.getElementById("chatIn").value.trim();if(!v)return;await db.collection("chats").add({from:CUR.name,role:CUR.role,text:v,time:Date.now()});document.getElementById("chatIn").value=""}
+async function addComment(){let v=document.getElementById("commIn").value.trim();if(!v)return;await db.collection("comments").add({from:CUR.name,text:v});document.getElementById("commIn").value=""}
+async function saveProfile(){let f=document.getElementById("setPic").files[0];let pic=CUR.pic;if(f)pic=await new Promise(r=>fileToB64(f,r));await db.collection("users").doc(CUR.id).update({name:document.getElementById("setName").value,phone:document.getElementById("setPhone").value,cls:document.getElementById("setClass").value,pic});alert("Profile imesaviva")}
 function askIris(){let q=document.getElementById("irisIn").value.trim();if(!q)return;answerIris(q);document.getElementById("irisIn").value=""}
 function quickIris(t){answerIris(t)}
-function answerIris(q){
-let box=document.getElementById("irisBox");box.innerHTML+=`<div class="msg me">${q}</div>`;
-let low=q.toLowerCase();let ans="";
-if(low.includes("salamu")||low.includes("hello")||low.includes("habari"))ans=(LANG=="sw"?`Habari ${CUR.name}! Mimi ni IRIS, niko hapa kukusaidia kuhusu matokeo na mambo ya kitaaluma. Uliza kuhusu mwanafunzi yeyote, kwa mfano: Juma Form 2 Kiswahili alipata ngapi?`:`Hello ${CUR.name}! I am IRIS, here to help with results and academic matters.`);
-else if(low.includes("ushauri")||low.includes("advice")){let a=avg(DB.results);ans=(LANG=="sw"?`Ushauri kwa ${CUR.name}: Wastani wa sasa ni ${a}. Watambue wanafunzi walio chini ya 30, wape mazoezi zaidi, na wafuatilie kila wiki. Usikate tamaa, kila mwanafunzi anaweza kufaulu.`:`Advice for ${CUR.name}: Current average is ${a}. Focus on students below 30, give extra exercises and follow up weekly.`)}
-else{
-let found=null;for(let s of DB.students){if(low.includes(s.name.toLowerCase())){found=s;break}}
-if(found){let res=DB.results.filter(r=>r.student==found.name);let d=divisionFromResults(res);ans=(LANG=="sw"?`${found.name} - ${found.form} - Darasa ${found.cls||""}. Matokeo yake: ${res.map(r=>`${r.subject} (${r.form} - ${r.test}): ${r.marks} - Grade ${r.grade}`).join(", ")||"Hana matokeo bado"}. Average: ${avg(res)}. Division yake kwa masomo 7 bora ni: ${d.div} (Points ${d.sum}).`:`${found.name} - ${found.form}. Results: ${res.map(r=>`${r.subject}: ${r.marks}`).join(", ")}. Average ${avg(res)}. Division ${d.div}.`)}
-else if(low.includes("wastani")||low.includes("average"))ans=`Wastani wa wanafunzi wote ni ${avg(DB.results)}.`
-else ans=(LANG=="sw"?`Samahani ${CUR.name}, sijaelewa vizuri. Niambie jina la mwanafunzi na somo, mf: "Juma Form 2 Kiswahili alipata ngapi?"`:`Sorry ${CUR.name}, please tell me student name and subject.`)}
-box.innerHTML+=`<div class="msg other"><b>IRIS:</b> ${ans}</div>`;box.scrollTop=box.scrollHeight;
-}
-function renderAll(){
-if(!CUR)return;document.getElementById("cStud").innerText=DB.students.length;document.getElementById("cTest").innerText=DB.results.length;document.getElementById("cAvg").innerText=avg(DB.results);
-document.getElementById("dashInfo").innerHTML=`<b>${CUR.name}</b> | ${CUR.role=="admin"?"ADMIN":"Mwalimu"} | ${LANG=="sw"?"Masomo: ":"Subjects: "}${(CUR.subs||[]).join(", ")} | ${LANG=="sw"?"Madarasa: ":"Classes: "}${CUR.cls||""} ${CUR.pic?`<br><img src="${CUR.pic}" class="avatar">`:""}`;
-document.getElementById("testSubj").innerHTML=COMPULSORY.map(s=>`<option>${s}</option>`).join("");
-document.getElementById("testStud").innerHTML=DB.students.map(s=>`<option value="${s.id}">${s.name} - ${s.form}</option>`).join("");
-document.getElementById("studList").innerHTML=DB.students.map(s=>`<div class="card"><b>${s.name}</b> - ${s.form} - ${s.cls||""} <span class="pill">Mwalimu: ${s.teacher}</span> <button class="danger" onclick="deleteStudent(${s.id})">Futa</button></div>`).join("")||"<p class='muted'>Hakuna mwanafunzi bado.</p>";
-document.getElementById("resTable").innerHTML=DB.results.map(r=>`<tr><td>${r.student}</td><td>${r.form}</td><td>${r.subject}</td><td>${r.test}</td><td>${r.marks}</td><td>${r.grade}</td><td>${r.teacher}</td><td><button class="danger" onclick="deleteResult(${r.id})">Futa Test</button></td></tr>`).join("");
-let summ={};DB.results.forEach(r=>{(summ[r.student]=summ[r.student]||[]).push(r)});
-document.getElementById("summary").innerHTML=Object.keys(summ).map(n=>{let res=summ[n];let d=divisionFromResults(res);let a=avg(res);return `<div class="card"><b>${n}</b> - ${res[0].form} - Average: ${a} - Grade ya Average: ${grade(Number(a))} - Division: <b>${d.div}</b> (Points ${d.sum} - Masomo 7 bora) - ${res.map(r=>`${r.subject}: ${r.marks}`).join(" | ")}<div class="bar"><i style="width:${a}%"></i></div></div>`}).join("")||"Hakuna matokeo";
-document.getElementById("graphs").innerHTML=Object.keys(summ).map(n=>{let a=avg(summ[n]);return `<div>${n} - ${a}%<div class="bar"><i style="width:${a}%"></i></div></div>`}).join("");
-document.getElementById("chatBox").innerHTML=DB.chats.map(c=>`<div class="msg ${c.from==CUR.name?"me":"other"}"><b>${c.from} (${c.role}):</b> ${c.text}<br><small>${c.time||""}</small></div>`).join("");
-document.getElementById("commList").innerHTML=DB.comments.map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join("");
-if(CUR.role=="admin"){document.getElementById("adminTeachers").innerHTML=`<h3>Walimu Wote - Admin Anaona Details Zao</h3>`+DB.users.map(u=>`<div class="card flex"><div>${u.pic?`<img src="${u.pic}" class="avatar">`:""}<b>${u.name}</b><br>${u.phone||"
+function answerIris(q){let box=document.getElementById("irisBox");box.innerHTML+=`<div class="msg me">${q}</div>`;let low=q.toLowerCase(),ans="";if(low.includes("salamu")||low.includes("hello")||low.includes("habari"))ans=`Habari ${CUR.name}! Mimi ni IRIS 🤖, niko hapa kukusaidia kuhusu matokeo na mambo ya kitaaluma. Uliza kuhusu mwanafunzi yeyote, mf: Juma Form 2 Kiswahili alipata ngapi?`;else if(low.includes("ushauri")||low.includes("advice"))ans=`Ushauri kwa ${CUR.name}: Wastani ni ${avg(RESULTS)}. Watambue walio chini ya 30, wape mazoezi zaidi, wafuatilie kila wiki. Kila mwanafunzi anaweza kufaulu.`;else{let found=null;for(let s of STUDENTS){if(low.includes(s.name.toLowerCase())){found=s;break}}if(found){let res=RESULTS.filter(r=>r.student==found.name);let d=divCalc(res);ans=`${found.name} - ${found.form} - Darasa ${found.cls||""}. Matokeo: ${res.map(r=>`${r.subject} (${r.form} - ${r.test}): ${r.marks} - Grade ${r.grade}`).join(", ")||"Hana matokeo"}. Average: ${avg(res)}. Division kwa masomo 7 bora: ${d.div} (Points ${d.sum}).`}else if(low.includes("wastani")||low.includes("average"))ans=`Wastani wa wote ni ${avg(RESULTS)}.`;else ans=`Samahani ${CUR.name}, niambie jina la mwanafunzi na somo, mf: "Juma Form 2 Kiswahili alipata ngapi?"`}box.innerHTML+=`<div class="msg other"><b>IRIS:</b> ${ans}</div>`;box.scrollTop=box.scrollHeight}
+function renderAll(){if(!CUR)return;document.getElementById("cStud").innerText=STUDENTS.length;document.getElementById("cTest").innerText=RESULTS.length;document.getElementById("cAvg").innerText=avg(RESULTS);document.getElementById("dashInfo").innerHTML=`<b>${CUR.name}</b> | ${CUR.email} | ${CUR.role=="admin"?"ADMIN":"Mwalimu"} | Masomo: ${(CUR.subs||[]).join(", ")} | Madarasa: ${CUR.cls||""} ${CUR.pic?`<br><img src="${CUR.pic}" class="avatar">`:""}`;document.getElementById("testSubj").innerHTML=COMPULSORY.map(s=>`<option>${s}</option>`).join("");document.getElementById("testStud").innerHTML=STUDENTS.map(s=>`<option value="${s.id}">${s.name} - ${s.form}</option>`).join("");document.getElementById("studList").innerHTML=STUDENTS.map(s=>`<div class="card"><b>${s.name}</b> - ${s.form} - ${s.cls||""} <span class="pill">Mwalimu: ${s.teacher}</span> <button class="danger" onclick="deleteStudent('${s.id}')">Futa</button></div>`).join("")||"<p class='muted'>Hakuna mwanafunzi.</p>";document.getElementById("resTable").innerHTML=RESULTS.map(r=>`<tr><td>${r.student}</td><td>${r.form}</td><td>${r.subject}</td><td>${r.test}</td><td>${r.marks}</td><td>${r.grade}</td><td>${r.teacher}</td><td><button class="danger" onclick="deleteResult('${r.id}')">Futa Test</button></td></tr>`).join("");let summ={};RESULTS.forEach(r=>{(summ[r.student]=summ[r.student]||[]).push(r)});document.getElementById("summary").innerHTML=Object.keys(summ).map(n=>{let res=summ[n],d=divCalc(res),a=avg(res);return `<div class="card"><b>${n}</b> - ${res[0].form} - Average: ${a} - Grade ya Average: ${grade(Number(a))} - Division: <b>${d.div}</b> (Points ${d.sum})<div class="bar"><i style="width:${a}%"></i></div></div>`}).join("")||"Hakuna matokeo";document.getElementById("graphs").innerHTML=Object.keys(summ).map(n=>{let a=avg(summ[n]);return `<div>${n} - ${a}%<div class="bar"><i style="width:${a}%"></i></div></div>`}).join("");document.getElementById("chatBox").innerHTML=CHATS.map(c=>`<div class="msg ${c.from==CUR.name?"me":"other"}"><b>${c.from}:</b> ${c.text}</div>`).join("");document.getElementById("commList").innerHTML=COMMENTS.map(c=>`<div><b>${c.from}:</b> ${c.text}</div>`).join("");if(CUR.role=="admin")document.getElementById("adminTeachers").innerHTML=`<h3>Walimu Wote - Admin Anaona Details</h3>`+USERS.map(u=>`<div class="card">${u.pic?`<img src="${u.pic}" class="avatar">`:""}<b>${u.name}</b><br>${u.email}<br>${u.phone||""}<br>${u.role}<br>Masomo: ${(u.subs||[]).join(", ")}<br>Madarasa: ${u.cls||""}</div>`).join("");else document.getElementById("adminTeachers").innerHTML="";let ib=document.getElementById("irisBox");if(ib&&!ib.innerHTML)ib.innerHTML=`<div class="msg other"><b>IRIS:</b> Habari ${CUR.name}! Mimi ni IRIS. Niulize matokeo ya mwanafunzi yeyote.</div>`}
+renderMenu();
+const quotes=["“Elimu ni Mwanga - Kila Mwanafunzi Anaweza Kufaulu.”","“Mwalimu Bora Hujenga Taifa Bora.”","“Jifunze Leo, Uongoze Kesho.”","“Kusoma ni Ufunguo wa Mafanikio.”"];let qi=0;setInterval(()=>{qi=(qi+1)%quotes.length;let q=document.getElementById("quoteBox");if(q)q.innerText=quotes[qi]},5000);
+</script></body></html>
