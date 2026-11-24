@@ -1,77 +1,42 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Real Teacher - IRIS</title>
-<style>
-*{box-sizing:border-box} body{margin:0;font-family:system-ui;background:#f1f5f9;color:#0f172a}
-header{background:#1e3a8a;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
-header b{font-size:18px} header span{font-size:12px;background:#facc15;color:#000;padding:3px 8px;border-radius:20px}
-.wrap{max-width:520px;margin:auto;padding:12px}
-.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px #0001}
-.btn{border:0;padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer}
-.primary{background:#1e3a8a;color:#fff} .yellow{background:#facc15}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:12px;margin:6px 0}
-.nav{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.nav button{background:#fff;border:1px solid #e2e8f0;padding:10px 4px;border-radius:12px;font-weight:700}
-.nav button.active{background:#1e3a8a;color:#fff}
-.hidden{display:none} .row{display:flex;gap:8px;align-items:center}
-.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#e2e8f0}
-.iris-img{width:150px;height:150px;border-radius:50%;border:4px solid #facc15;object-fit:cover;background:#fef9c3}
-.stu{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #f1f5f9}
-</style>
-</head>
-<body>
-<header><div><b>REAL TEACHER</b><br><small>Mwalimu wa Kweli</small></div><span>IRIS AI</span></header>
-
+<!DOCTYPE html><html lang="sw"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>REAL TEACHER</title><style>*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f1f5f9}header{background:#0b2a4a;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}header h1{margin:0;font-size:22px}header h1 span{color:#facc15}.wrap{padding:12px;max-width:900px;margin:auto}.card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px}input,textarea,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;margin:6px 0}button{padding:11px 14px;border:0;border-radius:10px;background:#0b2a4a;color:#fff;font-weight:700}button.gold{background:#facc15;color:#111}button.red{background:#dc2626}button.green{background:#16a34a}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{background:#e2e8f0;color:#111}.tabs button.on{background:#0b2a4a;color:#fff}table{width:100%;border-collapse:collapse;font-size:14px}th,td{border:1px solid #e2e8f0;padding:7px;text-align:left}th{background:#0b2a4a;color:#fff}.small{font-size:12px;color:#64748b}.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#e2e8f0}.badge{background:#dcfce7;padding:4px 10px;border-radius:20px;font-size:12px}.hidden{display:none}.pill{background:#eef2ff;padding:6px 10px;border-radius:20px;font-size:13px}.bar{height:18px;background:#e2e8f0;border-radius:10px;overflow:hidden}.bar>div{height:100%;background:#16a34a}.subj{background:#facc15;padding:3px 8px;border-radius:10px;font-weight:700;font-size:12px}</style></head><body>
+<header><div><h1>REAL <span>TEACHER</span></h1><p style="margin:0;font-size:12px">Elimu Bora, Matokeo Bora</p></div><select onchange="setLang(this.value)"><option value="sw">Kiswahili</option><option value="en">English</option></select></header>
 <div class="wrap">
-<!-- LOGIN -->
-<div id="auth" class="card">
-<h2 style="text-align:center">Karibu Mwalimu 👩🏻‍🏫</h2>
-<input id="tName" placeholder="Jina lako">
-<input id="tSchool" placeholder="Shule">
-<input id="tPass" type="password" placeholder="Password">
-<button class="btn primary" style="width:100%" onclick="login()">Ingia / Jisajili</button>
-<p style="text-align:center;font-size:12px;color:#64748b">App inahifadhi data kwenye simu yako</p>
-</div>
-
-<!-- MAIN -->
-<div id="main" class="hidden">
-<div class="card row">
-<img id="myPic" class="avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
-<div style="flex:1"><b id="showName">Mwalimu</b><br><small id="showSchool"></small></div>
-<button onclick="changePic()">Badilisha Picha</button>
-</div>
-
-<div class="nav">
-<button onclick="show('dash',this)" class="active">Nyumbani</button>
-<button onclick="show('students',this)">Wanafunzi</button>
-<button onclick="show('ai',this)">IRIS AI</button>
-<button onclick="show('settings',this)">Mipangilio</button>
-</div>
-
-<!-- DASH -->
-<div id="dash" class="card">
-<h3>Leo: <span id="today"></span></h3>
-<p>Wanafunzi: <b id="totalStu">0</b></p>
-<div class="row"><input id="newStu" placeholder="Jina la mwanafunzi"><button class="btn primary" onclick="addStu()">Ongeza</button></div>
-<div id="list"></div>
-</div>
-
-<!-- STUDENTS -->
-<div id="students" class="card hidden">
-<h3>Orodha ya Wanafunzi</h3>
-<div id="list2"></div>
-</div>
-
-<!-- IRIS - MPYA -->
-<div id="ai" class="card hidden">
-<div style="text-align:center">
-<img src="iris.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'" class="iris-img">
-<h2 style="margin:8px 0 0">👩🏻‍🏫 AI IRIS</h2>
-<p style="margin:0;color:#64748b;font-size:13px">Msaidizi wako wa Kike - Niulize chochote!</p>
-</div>
-<div style="display:flex;gap:8px;margin-top:12px">
-<input id="aiQ" placeholder="Uliza IRIS... mf: Andika barua ya ruhusa">
-<button class="btn primary"
+<div id="auth" class="card"><h2>Ingia / Jisajili</h2><div class="row"><input id="aName" placeholder="Jina Kamili"><input id="aEmail" placeholder="Email"></div><div class="row"><input id="aPass" type="password" placeholder="Password (Siri)"><input id="aPhone" placeholder="Simu"></div><label class="small">Picha yako (kutoka simu):</label><input type="file" accept="image/*" onchange="previewPic(this)"><img id="aPicPrev" class="avatar hidden"><div class="row"><button onclick="register()">JISAJILI</button><button class="gold" onclick="login()">INGIA</button></div><p id="authMsg"></p></div>
+<div id="app" class="hidden">
+<div class="card"><div class="row"><div><img id="myAvatar" class="avatar"><b id="myName"></b><div class="small" id="myEmail"></div><span class="badge" id="myRole"></span></div><div style="text-align:right"><button class="red" onclick="logout()">Toka</button><br><br><label class="small">Badilisha Picha:</label><input type="file" accept="image/*" onchange="changePic(this)"></div></div></div>
+<div class="tabs card"><button onclick="show('dash')" class="on">Dashboard</button><button onclick="show('students')">Wanafunzi</button><button onclick="show('results')">Matokeo</button><button onclick="show('graphs')">Graph</button><button onclick="show('chat')">Chat</button><button onclick="show('ai')">AI IRIS</button></div>
+<div id="dash" class="card"><h2>Dashboard</h2><p id="dashStats"></p><div id="adminOnly" class="hidden"><h3>Walimu Wote</h3><div id="teacherList"></div></div><div id="dashList"></div></div>
+<div id="students" class="card hidden"><h2>Wanafunzi - Ingiza Majina Mengi</h2><textarea id="bulkNames" rows="6" placeholder="Juma Mwalimu&#10;Neema John"></textarea><div class="row"><input id="sClass" placeholder="Darasa e.g. Form 2"><select id="sSubject"><option>English</option><option>Maths</option><option>Kiswahili</option><option>Science</option><option>Social Studies</option></select></div><button class="green" onclick="addBulk()">ONGEZA WANAFUNZI WOTE</button><p id="studMsg"></p><div id="studList"></div></div>
+<div id="results" class="card hidden"><h2>Matokeo - Chagua Somo Kwanza!</h2><p class="small">Grade: A=75-100, B=65-74, C=45-64, D=30-44, F=0-29 | Division: I=75+, II=65-74, III=45-64, IV=30-44, 0=Chini ya 30</p><div class="row"><select id="resSubject"><option>English</option><option>Maths</option><option>Kiswahili</option><option>Science</option><option>Social Studies</option></select><select id="testSel" onchange="renderResults()"></select><select id="filterClass" onchange="renderResults()"><option value="">Madarsa Yote</option></select></div><div style="background:#fef9c3;padding:10px;border-radius:10px"><b>Unaingiza matokeo ya:</b> <span id="curResLabel" class="subj">English - Test 1</span></div><div id="resTable"></div><button class="green" onclick="saveOneTest()">SAVE HII TEST TU</button><p id="resMsg"></p><h3>Matokeo Yaliyosave - Na Somo</h3><div id="savedResults"></div></div>
+<div id="graphs" class="card hidden"><h2>Graph - Matokeo Kwa Somo</h2><div id="graphArea"></div></div>
+<div id="chat" class="card hidden"><h2 id="chatTitle">Chat</h2><div id="adminChatFilter" class="hidden"><select id="chatFilter" onchange="renderChat()"><option value="">Walimu Wote</option></select></div><div id="chatBox" style="max-height:250px;overflow:auto"></div><div class="row"><input id="chatIn" placeholder="Andika ujumbe..."><button onclick="sendChat()">Tuma</button></div></div>
+<div id="ai" class="card hidden"><h2>AI IRIS</h2><input id="aiIn" placeholder="Nani kafanya vizuri?"><button onclick="askAI()">Uliza AI</button><p id="aiOut"></p></div>
+</div></div>
+<script>
+let users=JSON.parse(localStorage.getItem('rt_users')||'[]'); if(!users.find(u=>u.email==='silondwajosephat73@gmail.com')){users.push({name:'Josephat Silondwa',email:'silondwajosephat73@gmail.com',pass:'Admin123!',role:'ADMIN',pic:''});localStorage.setItem('rt_users',JSON.stringify(users));}
+let students=JSON.parse(localStorage.getItem('rt_students')||'[]'); let scores=JSON.parse(localStorage.getItem('rt_scores')||'{}'); let chats=JSON.parse(localStorage.getItem('rt_chats')||'[]'); let cur=null; let tmpPic='';
+function setLang(v){renderAll();}
+function previewPic(el){let r=new FileReader();r.onload=e=>{tmpPic=e.target.result;let im=document.getElementById('aPicPrev');im.src=tmpPic;im.classList.remove('hidden')};r.readAsDataURL(el.files[0]);}
+function changePic(el){let r=new FileReader();r.onload=e=>{cur.pic=e.target.result;document.getElementById('myAvatar').src=cur.pic;localStorage.setItem('rt_users',JSON.stringify(users));};r.readAsDataURL(el.files[0]);}
+function register(){let n=aName.value.trim(),e=aEmail.value.trim().toLowerCase(),p=aPass.value;if(!n||!e||!p){authMsg.innerText='Jaza jina, email na password';return;}if(users.find(u=>u.email==e)){authMsg.innerText='Email hii tayari ipo';return;}users.push({name:n,email:e,pass:p,phone:aPhone.value,role:'TEACHER',pic:tmpPic});localStorage.setItem('rt_users',JSON.stringify(users));authMsg.innerText='Umejisajili! Sasa INGIA.';}
+function login(){let e=aEmail.value.trim().toLowerCase(),p=aPass.value;let u=users.find(x=>x.email==e&&x.pass==p);if(!u){authMsg.innerText='Email au Password si sahihi';return;}cur=u;document.getElementById('auth').classList.add('hidden');document.getElementById('app').classList.remove('hidden');document.getElementById('myName').innerText=u.name;document.getElementById('myEmail').innerText=u.email+' - '+u.role;document.getElementById('myRole').innerText=u.role;if(u.pic)document.getElementById('myAvatar').src=u.pic;renderAll();}
+function logout(){cur=null;location.reload();}
+function show(id){['dash','students','results','graphs','chat','ai'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');renderAll();}
+function grade(v){if(v===''||v==null)return '';if(v>=75)return 'A';if(v>=65)return 'B';if(v>=45)return 'C';if(v>=30)return 'D';return 'F';}
+function division(a){if(a>=75)return 'I';if(a>=65)return 'II';if(a>=45)return 'III';if(a>=30)return 'IV';return '0';}
+function myStudents(){return cur.role=='ADMIN'?students:students.filter(s=>s.teacher==cur.email);}
+function avgFor(sid,subj){let vals=[];for(let k in scores){if(cur.role!='ADMIN'&&!k.endsWith(cur.email))continue;let parts=k.split('|');if(subj&&parts[1]!=subj)continue;if(scores[k][sid]!==undefined)vals.push(scores[k][sid]);}if(!vals.length)return null;return vals.reduce((a,b)=>a+b,0)/vals.length;}
+function addBulk(){let lines=document.getElementById('bulkNames').value.split('\n').map(s=>s.trim()).filter(Boolean);let cls=document.getElementById('sClass').value.trim()||'Form 2';let subj=document.getElementById('sSubject').value;if(!lines.length)return;lines.forEach(n=>students.push({id:Date.now()+Math.random(),name:n,cls,subj,teacher:cur.email}));localStorage.setItem('rt_students',JSON.stringify(students));studMsg.innerText=`Wameongezwa ${lines.length}`;document.getElementById('bulkNames').value='';renderAll();}
+function renderAll(){if(!cur)return;let ms=myStudents();document.getElementById('dashStats').innerText=cur.role=='ADMIN'?`Walimu: ${users.length} - Wanafunzi: ${ms.length}`:`Wanafunzi Wako: ${ms.length}`;let ab=document.getElementById('adminOnly');if(cur.role=='ADMIN'){ab.classList.remove('hidden');document.getElementById('teacherList').innerHTML=users.map(u=>`<div class="pill">${u.name} - ${u.email} - ${u.phone||''} - ${u.role}</div>`).join('');}else{ab.classList.add('hidden');}document.getElementById('dashList').innerHTML=ms.map(s=>{let av=avgFor(s.id);return `<div class="pill">${s.name} - ${s.cls} - ${s.subj} ${av!==null?`| Wastani: ${av.toFixed(1)} | Grade ${grade(av)} | Div ${division(av)}`:''}</div>`}).join('');document.getElementById('studList').innerHTML='<table><tr><th>Jina</th><th>Darasa</th><th>Somo</th><th>Wastani</th><th>Division</th><th></th></tr>'+ms.map(s=>{let av=avgFor(s.id);return `<tr><td>${s.name}</td><td>${s.cls}</td><td><span class="subj">${s.subj}</span></td><td>${av!==null?av.toFixed(1):'-'}</td><td>${av!==null?division(av):'-'}</td><td><button class="red" onclick="delStud(${s.id})">X</button></td></tr>`}).join('')+'</table>';let sel=document.getElementById('testSel');sel.innerHTML='';for(let i=1;i<=10;i++){let o=document.createElement('option');o.value='Test '+i;o.text='Test '+i;sel.appendChild(o);}let fc=document.getElementById('filterClass');let classes=[...new Set(ms.map(s=>s.cls))];fc.innerHTML='<option value="">Madarsa Yote</option>'+classes.map(c=>`<option>${c}</option>`).join('');let cf=document.getElementById('chatFilter');if(cur.role=='ADMIN'){document.getElementById('adminChatFilter').classList.remove('hidden');document.getElementById('chatTitle').innerText='Chat za Walimu';cf.innerHTML='<option value="">Walimu Wote</option>'+users.filter(u=>u.role!='ADMIN').map(u=>`<option value="${u.email}">${u.name}</option>`).join('');}else{document.getElementById('adminChatFilter').classList.add('hidden');document.getElementById('chatTitle').innerText='Chat na Admin';}renderResults();renderSaved();renderChat();renderGraphs();}
+function delStud(id){students=students.filter(s=>s.id!=id);localStorage.setItem('rt_students',JSON.stringify(students));renderAll();}
+function resKey(){return document.getElementById('testSel').value+'|'+document.getElementById('resSubject').value+'|'+cur.email;}
+function renderResults(){if(!cur)return;let subj=document.getElementById('resSubject').value;let test=document.getElementById('testSel').value;document.getElementById('curResLabel').innerText=subj+' - '+test;let fc=document.getElementById('filterClass').value;let ms=myStudents().filter(s=>!fc||s.cls==fc);let key=resKey();let saved=scores[key]||{};document.getElementById('resTable').innerHTML='<table><tr><th>Jina</th><th>Somo</th><th>Alama</th><th>Grade</th></tr>'+ms.map(s=>{let v=saved[s.id]??'';return `<tr><td>${s.name}</td><td><span class="subj">${subj}</span></td><td><input type="number" min="0" max="100" data-sid="${s.id}" value="${v}" oninput="liveGrade(this)"></td><td class="grade">${grade(v)}</td></tr>`}).join('')+'</table>';}
+function liveGrade(el){el.closest('tr').querySelector('.grade').innerText=grade(el.value===''?'':parseFloat(el.value));}
+function saveOneTest(){let key=resKey();let obj=scores[key]||{};document.querySelectorAll('#resTable input').forEach(inp=>{if(inp.value!=='')obj[inp.dataset.sid]=parseFloat(inp.value);});scores[key]=obj;localStorage.setItem('rt_scores',JSON.stringify(scores));document.getElementById('resMsg').innerText=document.getElementById('resSubject').value+' - '+document.getElementById('testSel').value+' imesave!';renderSaved();renderGraphs();}
+function renderSaved(){let html='';for(let k in scores){if(cur.role!='ADMIN'&&!k.endsWith(cur.email))continue;let parts=k.split('|');let label=parts[0]+' - '+parts[1];let entries=Object.entries(scores[k]);html+=`<div class="card" style="border:1px solid #e2e8f0"><b>${label}</b> <span class="subj">${parts[1]}</span> - Wanafunzi ${entries.length}<table><tr><th>Jina</th><th>Somo</th><th>Alama</th><th>Grade</th><th>Division</th></tr>`+entries.map(([sid,val])=>{let st=students.find(s=>s.id==sid);return `<tr><td>${st?st.name:'(aliyefutwa)'}</td><td>${parts[1]}</td><td>${val}</td><td>${grade(val)}</td><td>${division(val)}</td></tr>`}).join('')+'</table></div>';}document.getElementById('savedResults').innerHTML=html||'<p class="small">Hakuna test iliyosave bado</p>';}
+function renderGraphs(){let ms=myStudents();document.getElementById('graphArea').innerHTML=ms.map(s=>{let av=avgFor(s.id);let w=av!==null?Math.round(av):0;return `<div><b>${s.name}</b> - ${s.subj} - Wastani ${av!==null?av.toFixed(1):'-'} - Div ${av!==null?division(av):'-'}<div class="bar"><div style="width:${w}%"></div></div></div>`}).join('');}
+function sendChat(){let t=chatIn.value.trim();if(!t)return;chats.push({from:cur.name,email:cur.email,role:cur.role,text:t,time:new Date().toLocaleString(),to:cur.role=='ADMIN'?'ALL':cur.email});localStorage.setItem('rt_chats',JSON.stringify(chats));chatIn.value='';renderChat();}
+function renderChat(){let f=document.getElementById('chatFilter')?.value||'';let vis;if(cur.role=='ADMIN'){vis=chats.filter(c=>!f||c.email==f||c.to==f);}else{vis=chats.filter(c=>c.email==cur.email||c.to==cur.email||(c.role=='ADMIN'&&c.to=='ALL'));}document.getElementById('chatBox').innerHTML=vis.map(c=>`<p><b>${c.from}:</b> ${c.text} <span class="small">${c.time}</span></p>`).join('')||'<p class="small">Hakuna chat bado</p>';}
+function askAI(){let best='';let bs=-1;for(let k in scores){if(cur.role!='ADMIN'&&!k.endsWith(cur.email))continue;for(let [sid,val] of Object.entries(scores[k])){if(val>bs){bs=val;let st=students.find(s=>s.id==sid);best=(st?st.name:'')+' - '+k.split('|')[1];}}}aiOut.innerText=best?`Bora ni ${best} na ${bs} - Division ${division(bs)}`:`Bado hakuna matokeo.`;}
+document.getElementById('resSubject').addEventListener('change',renderResults);
+</script></body></html>
