@@ -1,109 +1,77 @@
 <!DOCTYPE html>
-<html lang="sw"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>REAL TEACHER</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Real Teacher - IRIS</title>
 <style>
-*{box-sizing:border-box;font-family:Arial}body{margin:0;background:#f0f2f5}
-.entrance{background:linear-gradient(180deg,#0b2a4a,#0a4a7a);color:#fff;padding:22px 16px 26px;text-align:center;border-radius:0 0 24px 24px}
-.entrance h1{font-size:34px;margin:8px 0 2px;line-height:1}.entrance h1 span{color:#ffc107}
-.quote{background:#fff;color:#0b2a4a;border-radius:12px;padding:10px;margin:14px auto;max-width:480px;font-weight:bold;font-size:14px}
-header{background:#0b2a4a;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.top{display:flex;gap:8px;padding:10px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #ddd}
-.top button{padding:9px 12px;border:1px solid #0b2a4a;background:#fff;border-radius:20px;cursor:pointer;font-weight:bold}
-.wrap{max-width:1250px;margin:auto;padding:12px}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px #0001}
-label{font-weight:bold;font-size:13px;display:block;margin-top:10px}
-input,select,textarea{width:100%;padding:11px;margin-top:4px;border:1px solid #ccc;border-radius:8px}
-button.main{background:#0b2a4a;color:#fff;border:0;padding:12px;border-radius:8px;font-weight:bold;cursor:pointer;width:100%;margin-top:10px}
-button.danger{background:#c00;color:#fff;border:0;padding:6px 9px;border-radius:8px;cursor:pointer}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px}th,td{border:1px solid #ddd;padding:6px;text-align:center}th{background:#0b2a4a;color:#fff}
-.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#ddd;border:2px solid #0b2a4a;display:block}
-.avatarSm{width:50px;height:50px;border-radius:50%;object-fit:cover;background:#ddd;border:2px solid #0b2a4a}
-.irisBig{width:160px;height:160px;border-radius:50%;object-fit:cover;border:3px solid #ffc107;background:#fff;display:block;margin:0 auto}
-.irisSmall{width:130px;height:130px;border-radius:50%;object-fit:cover;object-position:top center;border:3px solid #ffc107;background:#fff;display:block;margin:0 auto}
-.subjGrid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.subjGrid label{background:#eef3f8;border:1px solid #0b2a4a;border-radius:20px;padding:7px 10px;font-size:13px;cursor:pointer;display:flex;gap:5px;align-items:center}.subjGrid input{width:auto;margin:0}
-.chat{border:1px solid #ddd;border-radius:10px;padding:10px;max-height:300px;overflow:auto;background:#fafafa}
-.msg{padding:8px 10px;border-radius:10px;margin:6px 0;max-width:85%}.me{background:#0b2a4a;color:#fff;margin-left:auto}.other{background:#e9e9e9}
-.hide{display:none}.muted{color:#666;font-size:13px}.center{text-align:center}
-.mini{width:52px;padding:7px;text-align:center;font-size:13px}
-.classTitle{background:#ffc107;color:#0b2a4a;padding:10px;border-radius:8px;margin-top:18px;font-weight:bold;font-size:16px}
-.tabBtn{flex:1;padding:12px 4px;border:0;font-weight:bold;cursor:pointer;background:#ddd;font-size:13px;white-space:nowrap}.tabBtn.on{background:#0b2a4a;color:#fff}
-.langBtn{padding:7px 10px;border:1px solid #fff;background:transparent;color:#fff;border-radius:20px;cursor:pointer;font-weight:bold}.langBtn.on{background:#ffc107;color:#0b2a4a}
-</style></head><body>
-<div id="entrance" class="entrance"><div style="text-align:right"><button class="langBtn on" id="btnSW" onclick="setLang('sw')">SW</button> <button class="langBtn" id="btnEN" onclick="setLang('en')">EN</button></div><img src="iris.png" class="irisSmall"><div style="font-size:32px">📚 ✏️ 🖊️ 📖 🎓 📐</div><h1>REAL<br><span>TEACHER</span></h1><p id="t-tag">Quality Education, Better Results</p><div class="quote" id="t-quote">“Elimu ni Mwanga - Kila Mwanafunzi Anaweza Kufaulu.”</div><p>Mimi ni <b>IRIS 💖</b></p></div>
-<div id="p-login" class="card" style="max-width:480px;margin:14px auto">
-<div style="display:flex;gap:4px"><button class="tabBtn on" id="tabLogin" onclick="switchTab('login')">INGIA</button><button class="tabBtn" id="tabReg" onclick="switchTab('reg')">JISAJILI MPYA</button></div>
-<div id="boxLogin">
-<h2 id="t-login">Ingia</h2>
-<form autocomplete="off">
-<label>Email</label><input id="email" type="email" placeholder="Andika Email yako" autocomplete="off">
-<label>Password</label><input id="pass" type="password" placeholder="Andika Password yako" autocomplete="new-password">
-</form>
-<button class="main" onclick="doLogin()">Ingia na Email</button>
-<p class="muted center" id="dbStatus">⏳ Inajiunganisha na Database...</p>
+*{box-sizing:border-box} body{margin:0;font-family:system-ui;background:#f1f5f9;color:#0f172a}
+header{background:#1e3a8a;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+header b{font-size:18px} header span{font-size:12px;background:#facc15;color:#000;padding:3px 8px;border-radius:20px}
+.wrap{max-width:520px;margin:auto;padding:12px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px #0001}
+.btn{border:0;padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer}
+.primary{background:#1e3a8a;color:#fff} .yellow{background:#facc15}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:12px;margin:6px 0}
+.nav{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.nav button{background:#fff;border:1px solid #e2e8f0;padding:10px 4px;border-radius:12px;font-weight:700}
+.nav button.active{background:#1e3a8a;color:#fff}
+.hidden{display:none} .row{display:flex;gap:8px;align-items:center}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#e2e8f0}
+.iris-img{width:150px;height:150px;border-radius:50%;border:4px solid #facc15;object-fit:cover;background:#fef9c3}
+.stu{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #f1f5f9}
+</style>
+</head>
+<body>
+<header><div><b>REAL TEACHER</b><br><small>Mwalimu wa Kweli</small></div><span>IRIS AI</span></header>
+
+<div class="wrap">
+<!-- LOGIN -->
+<div id="auth" class="card">
+<h2 style="text-align:center">Karibu Mwalimu 👩🏻‍🏫</h2>
+<input id="tName" placeholder="Jina lako">
+<input id="tSchool" placeholder="Shule">
+<input id="tPass" type="password" placeholder="Password">
+<button class="btn primary" style="width:100%" onclick="login()">Ingia / Jisajili</button>
+<p style="text-align:center;font-size:12px;color:#64748b">App inahifadhi data kwenye simu yako</p>
 </div>
-<div id="boxReg" class="hide">
-<h2>Jisajili Mpya</h2>
-<form autocomplete="off">
-<label>Jina Kamili</label><input id="regName" placeholder="Andika jina lako" autocomplete="off">
-<label>Namba ya Simu</label><input id="regPhone" placeholder="Andika namba yako" autocomplete="off">
-<label>Picha Yako</label><input type="file" id="regPic" accept="image/*" onchange="previewPic(this,'prev1')"><img id="prev1" class="avatar" style="display:none;margin-top:8px">
-<label>Wewe ni nani?</label><select id="regRole"><option value="admin">Admin</option><option value="teacher">Mwalimu / TEACHER</option></select>
-<label>✅ CHAGUA MASOMO YAKO (Max 3)</label>
-<div class="subjGrid">
-<label><input type="checkbox" value="Kiswahili" class="subjChk" onchange="updateSubjCount()"> Kiswahili</label>
-<label><input type="checkbox" value="English" class="subjChk" onchange="updateSubjCount()"> English</label>
-<label><input type="checkbox" value="Mathematics" class="subjChk" onchange="updateSubjCount()"> Mathematics</label>
-<label><input type="checkbox" value="Biology" class="subjChk" onchange="updateSubjCount()"> Biology</label>
-<label><input type="checkbox" value="Chemistry" class="subjChk" onchange="updateSubjCount()"> Chemistry</label>
-<label><input type="checkbox" value="Physics" class="subjChk" onchange="updateSubjCount()"> Physics</label>
-<label><input type="checkbox" value="Geography" class="subjChk" onchange="updateSubjCount()"> Geography</label>
-<label><input type="checkbox" value="History" class="subjChk" onchange="updateSubjCount()"> History</label>
-<label><input type="checkbox" value="Civics" class="subjChk" onchange="updateSubjCount()"> Civics</label>
-<label><input type="checkbox" value="Additional Maths" class="subjChk" onchange="updateSubjCount()"> Additional Maths</label>
-<label><input type="checkbox" value="Commerce" class="subjChk" onchange="updateSubjCount()"> Commerce</label>
-<label><input type="checkbox" value="Book Keeping" class="subjChk" onchange="updateSubjCount()"> Book Keeping</label>
-</div><p id="subjCount" class="muted">Umechagua: 0 / 3</p>
-<label>Madarasa</label><input id="regClass" placeholder="Andika madarasa yako" autocomplete="off">
-</form>
-<button class="main" style="background:#0a7a3a" onclick="doRegister()">Jisajili Mpya</button>
+
+<!-- MAIN -->
+<div id="main" class="hidden">
+<div class="card row">
+<img id="myPic" class="avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+<div style="flex:1"><b id="showName">Mwalimu</b><br><small id="showSchool"></small></div>
+<button onclick="changePic()">Badilisha Picha</button>
 </div>
+
+<div class="nav">
+<button onclick="show('dash',this)" class="active">Nyumbani</button>
+<button onclick="show('students',this)">Wanafunzi</button>
+<button onclick="show('ai',this)">IRIS AI</button>
+<button onclick="show('settings',this)">Mipangilio</button>
 </div>
-<header id="mainHeader" class="hide"><div><b>REAL TEACHER</b><br><span id="hiUser"></span></div><div><button class="langBtn" onclick="toggleLang()">SW / EN</button> <button onclick="logout()" style="padding:6px 10px;background:#c00;color:#fff;border:0;border-radius:8px">Logout</button></div></header>
-<div class="top hide" id="menu"></div>
-<div class="wrap hide" id="mainWrap">
-<div id="p-dash" class="card"><h2 id="t-dash">Dashboard</h2><div style="text-align:center"><img src="iris.png" class="irisSmall"><p><b>IRIS 💖</b> - <span id="irisGreet"></span></p></div><p id="dashInfo"></p><div style="display:flex;gap:10px;flex-wrap:wrap"><div class="card"><h3>Wanafunzi</h3><b id="cStud" style="font-size:28px">0</b></div><div class="card"><h3>Matokeo</h3><b id="cTest" style="font-size:28px">0</b></div><div class="card"><h3>Wastani</h3><b id="cAvg" style="font-size:28px">-</b></div></div><div class="card"><h3>📊 Statistics - Performance Graph</h3><canvas id="chartDiv"></canvas></div><div class="card"><h3>📈 Division Distribution</h3><canvas id="chartDiv2"></canvas></div><div id="adminTeachers"></div><div id="adminAllResults"></div></div>
-<div id="p-stud" class="card hide"><h2>Wanafunzi</h2><label>Chagua Kidato</label><select id="bulkForm"><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select><label>Darasa / Mkondo</label><input id="bulkClass"><label>Majina - Mmoja kwa mstari</label><textarea id="bulkNames" rows="8"></textarea><button class="main" onclick="addBulkStudents()">Ingiza Wanafunzi Wote</button><h3>Orodha</h3><select id="filterForm" onchange="renderAll()"><option value="">Wote</option><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select><div id="studList"></div></div>
-<div id="p-res" class="card hide"><h2>Matokeo - Jaza Darasa Zima</h2><label>1. Chagua Kidato</label><select id="testForm" onchange="renderAll()"><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select><label>2. Jina la Mtihani</label><input id="testName"><label>3. ✅ CHAGUA MASOMO YA KUINGIZA</label><div class="subjGrid"><label><input type="checkbox" value="Kiswahili" class="resSubjChk" checked onchange="updateResSubj()"> Kisw</label><label><input type="checkbox" value="English" class="resSubjChk" checked onchange="updateResSubj()"> Eng</label><label><input type="checkbox" value="Mathematics" class="resSubjChk" checked onchange="updateResSubj()"> Math</label><label><input type="checkbox" value="Biology" class="resSubjChk" checked onchange="updateResSubj()"> Bio</label><label><input type="checkbox" value="Chemistry" class="resSubjChk" checked onchange="updateResSubj()"> Chem</label><label><input type="checkbox" value="Physics" class="resSubjChk" checked onchange="updateResSubj()"> Phys</label><label><input type="checkbox" value="Geography" class="resSubjChk" checked onchange="updateResSubj()"> Geog</label><label><input type="checkbox" value="History" class="resSubjChk" checked onchange="updateResSubj()"> Hist</label><label><input type="checkbox" value="Civics" class="resSubjChk" checked onchange="updateResSubj()"> Civ</label></div><div style="overflow:auto"><table><thead><tr id="entryHead"></tr></thead><tbody id="entryTable"></tbody></table></div><button class="main" onclick="saveClassResults()">💾 Save Matokeo ya Darasa Zima</button><h3>📊 Table za Matokeo - Kila Darasa Lina Yake</h3><select id="viewForm" onchange="renderAll()"><option value="">Wote</option><option>Form 1</option><option>Form 2</option><option>Form 3</option><option>Form 4</option></select><div id="resultsByClass"></div></div>
-<div id="p-chat" class="card hide"><h2>Chat na Admin Tu</h2><p class="muted">Mwalimu anachati na Admin tu. Walimu hawachatiani.</p><div class="chat" id="chatBox"></div><input id="chatIn"><button class="main" onclick="sendChat()">Tuma</button><h3>Comments</h3><div id="commList"></div><input id="commIn"><button class="main" onclick="addComment()">Ongeza Comment</button></div>
-<div id="p-iris" class="card hide"><div style="text-align:center"><img src="iris.png" class="irisBig"><h2>IRIS AI 💖</h2><p class="muted" id="irisIntro"></p></div><div class="chat" id="irisBox"></div><input id="irisIn"><button class="main" onclick="askIris()">Muulize IRIS</button><div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><button onclick="quickIris('habari')">Habari</button><button onclick="quickIris('nisaidie kuboresha matokeo')">Ushauri wa Matokeo</button><button onclick="quickIris('wanafunzi wangu wanafanyaje')">Wanafunzi Wangu</button></div></div>
-<div id="p-set" class="card hide"><h2>Settings - Profile Yako</h2><img id="setPicShow" class="avatar"><label>Jina</label><input id="setName"><label>Namba</label><input id="setPhone"><label>Badilisha Picha</label><input type="file" id="setPic" accept="image/*" onchange="previewPic(this,'setPicShow')"><label>Madarasa</label><input id="setClass"><p id="setSubjShow"></p><label>Lugha / Language</label><select id="setLang" onchange="setLang(this.value)"><option value="sw">Kiswahili</option><option value="en">English</option></select><label>Update App</label><p class="muted">Badilisha code GitHub - data hazifutwi, zinabaki Firebase.</p><button class="main" onclick="saveProfile()">Save Profile</button></div>
+
+<!-- DASH -->
+<div id="dash" class="card">
+<h3>Leo: <span id="today"></span></h3>
+<p>Wanafunzi: <b id="totalStu">0</b></p>
+<div class="row"><input id="newStu" placeholder="Jina la mwanafunzi"><button class="btn primary" onclick="addStu()">Ongeza</button></div>
+<div id="list"></div>
 </div>
-<script>
-const firebaseConfig={apiKey:"AIzaSyAWeROSbPU4Qg1UwrdJusmH40dfMpwQjY0",authDomain:"real-teacher.firebaseapp.com",projectId:"real-teacher",storageBucket:"real-teacher.firebasestorage.app",messagingSenderId:"187089920582",appId:"1:187089920582:web:9de74396fab4befb372047"};
-try{firebase.initializeApp(firebaseConfig);document.getElementById("dbStatus").innerText="✅ Database Imeunganishwa - Tayari"}catch(e){document.getElementById("dbStatus").innerText="❌ Database Haikuunganishwa: "+e.message}
-const auth=firebase.auth(),db=firebase.firestore();
-const COMPULSORY=["Kiswahili","English","Mathematics","Biology","Chemistry","Physics","Geography","History","Civics"];
-const SHORT_MAP={Kiswahili:"Kisw",English:"Eng",Mathematics:"Math",Biology:"Bio",Chemistry:"Chem",Physics:"Phys",Geography:"Geog",History:"Hist",Civics:"Civ"};
-let CUR=null,USERS=[],STUDENTS=[],RESULTS=[],CHATS=[],COMMENTS=[];let SELECTED_RES_SUBJ=[...COMPULSORY];let LANG="sw";let CH1=null,CH2=null;
-const T={sw:{tag:"Quality Education, Better Results",quote:"“Elimu ni Mwanga - Kila Mwanafunzi Anaweza Kufaulu.”",login:"Ingia",dash:"Dashboard"},en:{tag:"Quality Education, Better Results",quote:"“Education is Light - Every Student Can Succeed.”",login:"Login",dash:"Dashboard"}};
-function setLang(l){LANG=l;document.getElementById("btnSW").classList.toggle("on",l=="sw");document.getElementById("btnEN").classList.toggle("on",l=="en");document.getElementById("t-tag").innerText=T[l].tag;document.getElementById("t-quote").innerText=T[l].quote;document.getElementById("t-login").innerText=T[l].login;document.getElementById("t-dash").innerText=T[l].dash;let s=document.getElementById("setLang");if(s)s.value=l}
-function toggleLang(){setLang(LANG=="sw"?"en":"sw")}
-function switchTab(t){document.getElementById("boxLogin").classList.toggle("hide",t!=="login");document.getElementById("boxReg").classList.toggle("hide",t!=="reg");document.getElementById("tabLogin").classList.toggle("on",t==="login");document.getElementById("tabReg").classList.toggle("on",t==="reg")}
-function grade(m){if(m===""||m==null)return "-";m=Number(m);if(m>=75)return"A";if(m>=65)return"B";if(m>=45)return"C";if(m>=30)return"D";return"F"}
-function pts(g){return{A:1,B:2,C:3,D:4,F:5}[g]||5}
-function divCalc(a){let nums=a.map(Number).filter(v=>!isNaN(v));if(nums.length<7)return{sum:"-",div:"-"};let p=nums.map(m=>pts(grade(m))).sort((x,y)=>x-y).slice(0,7);let s=p.reduce((x,y)=>x+y,0);let d=s>=7&&s<=17?"I":s>=18&&s<=22?"II":s>=23&&s<=25?"III":s>=26&&s<=33?"IV":s>=34&&s<=35?"0":"-";return{sum:s,div:d}}
-function avgArr(a){let n=a.filter(v=>v!==""&&v!=null&&!isNaN(v));if(!n.length)return "-";return (n.reduce((x,y)=>x+Number(y),0)/n.length).toFixed(1)}
-function avgGrade(a){let av=avgArr(a);if(av=="-")return "-";return grade(av)+" ("+av+")"}
-function previewPic(inp,id){let f=inp.files[0];if(!f)return;let r=new FileReader();r.onload=e=>{let im=document.getElementById(id);im.src=e.target.result;im.style.display="block"};r.readAsDataURL(f)}
-function fileToB64(f){return new Promise(res=>{let r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f)})}
-function updateSubjCount(){let n=document.querySelectorAll(".subjChk:checked").length;let el=document.getElementById("subjCount");if(el)el.innerText="Umechagua: "+n+" / 3";if(n>3){alert("Max 3 tu!");event.target.checked=false;updateSubjCount()}}
-function updateResSubj(){SELECTED_RES_SUBJ=[...document.querySelectorAll(".resSubjChk:checked")].map(c=>c.value);if(!SELECTED_RES_SUBJ.length)SELECTED_RES_SUBJ=[...COMPULSORY];renderAll()}
-async function ensureProfile(user,email,extra){let doc=await db.collection("users").doc(user.uid).get();if(!doc.exists){let name=(extra&&extra.name)||email.split("@")[0];let phone=(extra&&extra.phone)||"";let role=(extra&&extra.role)||"teacher";let subs=(extra&&extra.subs)||[];let cls=(extra&&extra.cls)||"";let pic=(extra&&extra.pic)||"";await db.collection("users").doc(user.uid).set({name,email,phone,role,subs,cls,pic});}return}
-async function doRegister(){let email=document.getElementById("email").value.trim(),pass=document.getElementById("pass").value,name=document.getElementById("regName").value.trim(),phone=document.getElementById("regPhone").value.trim(),role=document.getElementById("regRole").value,cls=document.getElementById("regClass").value.trim();let subs=[...document.querySelectorAll(".subjChk:checked")].map(c=>c.value);if(!email||!pass)return alert("Jaza Email na Password kwanza");if(pass.length<6)return alert("Password iwe angalau herufi 6");if(!name)name=email.split("@")[0];let f=document.getElementById("regPic").files[0];let pic="";if(f)pic=await fileToB64(f);try{let cr=await auth.createUserWithEmailAndPassword(email,pass);await db.collection("users").doc(cr.user.uid).set({name,email,phone,role,subs,cls,pic});alert("Umejisajili! Sasa umeingia.");}catch(e){if(e.code=="auth/email-already-in-use"){await doLogin();return}alert("Database: "+e.message)}}
-async function doLogin(){let email=document.getElementById("email").value.trim(),pass=document.getElementById("pass").value;if(!email||!pass)return alert("Andika Email na Password kwanza");if(pass.length<6)return alert("Password iwe angalau herufi 6");document.getElementById("dbStatus").innerText="⏳ Inaingia...";try{let cr=await auth.signInWithEmailAndPassword(email,pass);await ensureProfile(cr.user,email,{});document.getElementById("dbStatus").innerText="✅ Umeingia - Database Imeunganishwa";}catch(e){if(e.code=="auth/user-not-found"||e.code=="auth/invalid-credential"){try{let cr=await auth.createUserWithEmailAndPassword(email,pass);let name=document.getElementById("regName").value.trim()||email.split("@")[0];let phone=document.getElementById("regPhone").value.trim();let cls=document.getElementById("regClass").value.trim();let subs=[...document.querySelectorAll(".subjChk:checked")].map(c=>c.value);await db.collection("users").doc(cr.user.uid).set({name,email,phone,role:"teacher",subs,cls,pic:""});alert("Account haikuwepo, nimekutengenezea mpya na nimekuingiza!");return}catch(e2){alert("Haijaingia: "+e2.message)}}else if(e.code=="auth/wrong-password"){alert("Password sio sahihi kwa Email hii. Jaribu Password nyingine.");document.getElementById("dbStatus").innerText="❌ Password sio sahihi";}else{alert("Database: "+e.message);document.getElementById("dbStatus").innerText="❌ "+e.message;}}}
-async function logout(){await auth.signOut();location.reload()}
-auth.onAuthStateChanged(async u=>{if(!u){document.getElementById("dbStatus").innerText="✅ Database Imeunganishwa - Tayari";return}try{let doc=await db.collection("users").doc(u.uid).get();if(!doc.exists){await ensureProfile(u,u.email||"",{});doc=await db.collection("users").doc(u.uid).get()}CUR={id:u.uid,...doc.data()};}catch(e){alert("Database Error - Angalia Rules Firebase: "+e.message);return}document.getElementById("dbStatus").innerText="✅ Online - Database Imeunganishwa";document.getElementById("p-login").classList.add("hide");document.getElementById("entrance").classList.add("hide");document.getElementById("mainHeader").classList.remove("hide");document.getElementById("menu").classList.remove("hide");document.getElementById("mainWrap").classList.remove("hide");document.getElementById("hiUser").innerText="Karibu, "+CUR.name+" - "+CUR.role;document.getElementById("irisGreet").innerText="Karibu "+CUR.name+"!";document.getElementById("irisIntro").innerText="Habari "+CUR.name+", mimi ni IRI
+
+<!-- STUDENTS -->
+<div id="students" class="card hidden">
+<h3>Orodha ya Wanafunzi</h3>
+<div id="list2"></div>
+</div>
+
+<!-- IRIS - MPYA -->
+<div id="ai" class="card hidden">
+<div style="text-align:center">
+<img src="iris.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'" class="iris-img">
+<h2 style="margin:8px 0 0">👩🏻‍🏫 AI IRIS</h2>
+<p style="margin:0;color:#64748b;font-size:13px">Msaidizi wako wa Kike - Niulize chochote!</p>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<input id="aiQ" placeholder="Uliza IRIS... mf: Andika barua ya ruhusa">
+<button class="btn primary"
